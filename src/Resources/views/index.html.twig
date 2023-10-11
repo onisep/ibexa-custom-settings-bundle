@@ -1,0 +1,76 @@
+{% extends ['@ezdesign/layout.html.twig', '@ezdesign/ui/layout.html.twig'] %}
+
+{% block breadcrumbs %}
+    {% include ['@ezdesign/parts/breadcrumbs.html.twig', '@ezdesign/ui/breadcrumbs.html.twig'] with {items: [
+        { value: 'breadcrumb.admin' | trans(domain='messages') | desc('Admin') },
+        { value: 'ibexa_custom_settings.menu.label' | trans }
+    ]} %}
+{% endblock %}
+
+{% block page_title %}
+    {% include ['@ezdesign/parts/page_title.html.twig', '@ezdesign/ui/page_title.html.twig'] with {
+        title: 'ibexa_custom_settings.menu.label' | trans,
+        iconName: 'contentlist'
+    } %}
+{% endblock %}
+
+{% block content %}
+    <div class="container ez-container">
+        <div class="ez-scrollable-table-wrapper">
+            <div class="ez-table-header">
+                <strong class="ez-table-header__headline">Tous les paramètres personnalisés</strong>
+            </div>
+
+            <form action="" method="get" class="form-group form-inline ml-2">
+                <select name="key" id="key" class="form-control" aria-label="Filter par clé">
+                    <option value="" selected>Filter par clé</option>
+                    {% for setting_key in settings_keys %}
+                        <option value="{{ setting_key }}" {{ app.request.query.get('key') == setting_key ? 'selected' : '' }}>
+                            {{ setting_key }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Filtrer" class="btn btn-primary ml-2">
+            </form>
+
+            {% for location_id, settings in locations_settings %}
+                <div class="mb-4">
+                    <div class="mb-2 ml-3">
+                        <strong>
+                            <a href="{{ path('ez_urlalias', {'locationId': location_id}) }}#ez-tab-location-view-ibexa-settings#tab" class="text-primary">
+                                {{ ez_content_name(ez_get_location(location_id).content) }}
+                            </a>
+                        </strong>
+                        <small class="d-block">ID : {{ location_id }}</small>
+                    </div>
+
+                    <table class="ez-table table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Clé</th>
+                            <th>Valeur</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if settings is empty %}
+                            <tr>
+                                <td class="ez-table__cell" colspan="2">Aucun paramètre hérité.</td>
+                            </tr>
+                        {% endif %}
+                        {% for setting in settings %}
+                            <tr>
+                                <td class="ez-table__cell">
+                                    <input type="text" class="form-control" value="{{ setting.key }}" aria-label="Clé" disabled readonly>
+                                </td>
+                                <td class="ez-table__cell">
+                                    <input type="text" class="form-control" value="{{ setting.value }}" aria-label="Valeur" disabled readonly>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

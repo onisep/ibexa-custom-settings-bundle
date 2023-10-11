@@ -1,0 +1,3 @@
+ibexa_custom_settings_index:
+    path: /ibexa-custom-settings
+    defaults: { _controller: Onisep\IbexaCustomSettingsBundle\Controller\IbexaCustomSettingController::index }

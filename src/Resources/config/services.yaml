@@ -1,0 +1,22 @@
+services:
+    _defaults:
+        autowire: true
+
+    Onisep\IbexaCustomSettingsBundle\Controller\IbexaCustomSettingController:
+        autoconfigure: true
+
+    Onisep\IbexaCustomSettingsBundle\EventSubscriber\MenuSubscriber:
+        tags:
+            - { name: 'kernel.event_subscriber' }
+
+    Onisep\IbexaCustomSettingsBundle\Tab\IbexaCustomSettingsLocationTab:
+        tags:
+            - { name: 'ezplatform.tab', group: 'location-view' }
+
+    Onisep\IbexaCustomSettingsBundle\Repository\LocationSettingRepository:
+        arguments:
+            - '@Doctrine\Common\Persistence\ManagerRegistry'
+            - 'Onisep\IbexaCustomSettingsBundle\Entity\LocationSetting'
+
+    Onisep\IbexaCustomSettingsBundle\Twig\IbexaCustomSettingsExtension:
+        tags: [ 'twig.extension' ]

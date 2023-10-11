@@ -1,0 +1,20 @@
+{
+    "name": "onisep/ibexa-custom-settings-bundle",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Onisep\\IbexaCustomSettingsBundle\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Florian Bouché",
+            "email": "florian.bouche@onisep.fr"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": "^5.4",
+        "symfony/webpack-encore-bundle": "v1.17.1"
+    }
+}

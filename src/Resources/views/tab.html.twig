@@ -1,0 +1,109 @@
+<link rel="stylesheet" href="{{ asset('bundles/ibexacustomsettings/ibexa_custom_settings.css') }}">
+
+<div class="ez-table-header">
+    <strong class="ez-table-header__headline">Paramètres personnalisés</strong>
+</div>
+
+{% if form is defined %}
+    {% import _self as macros %}
+    {% macro setting_form_row(field) %}
+        <tr>
+            <td class="ez-table__cell">
+                {{ form_widget(field.key) }}
+                {% if not field.key.vars.valid %}
+                    <div class="invalid-feedback">{{ form_errors(field.key) }}</div>
+                {% endif %}
+            </td>
+            <td class="ez-table__cell">
+                {{ form_widget(field.value) }}
+                {% if not field.value.vars.valid %}
+                    <div class="invalid-feedback">{{ form_errors(field.value) }}</div>
+                {% endif %}
+            </td>
+            <td class="ez-table__cell">
+                {{ include('@IbexaCustomSettings/settings_tools.html.twig') }}
+            </td>
+        </tr>
+    {% endmacro %}
+
+    <div class="ez-scrollable-table-wrapper mb-4">
+        {% form_theme form '@ezdesign/ui/form_fields.html.twig' %}
+        {{ form_start(form) }}
+
+        <table class="ez-table table table-hover">
+            <thead>
+            <tr>
+                <th>Clé</th>
+                <th>Valeur</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody data-index="{{ form.settings | length > 0 ? form.settings | last.vars.name + 1 : 0 }}" data-prototype="{{ macros.setting_form_row(form.settings.vars.prototype) | e('html_attr') }}">
+            {% if form.settings is empty %}
+                <tr>
+                    <td class="ez-table__cell" colspan="3">Aucun paramètre personnalisé.</td>
+                </tr>
+            {% endif %}
+            {% for field in form.settings %}
+                {{ macros.setting_form_row(field) }}
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="mt-4 ml-3">
+            <button type="button" id="ibexa-settings-form-add" class="btn btn-secondary mr-2">
+                Ajouter un paramètre
+            </button>
+
+            {{ form_widget(form.update) }}
+        </div>
+
+        <div class="d-none">{{ form_rest(form) }}</div>
+        {{ form_end(form) }}
+    </div>
+
+    <hr>
+
+    <div class="ez-scrollable-table-wrapper">
+        <div class="ez-table-header">
+            <strong class="ez-table-header__headline">Paramètres personnalisés hérités</strong>
+        </div>
+        <table class="ez-table table table-hover">
+            <thead>
+            <tr>
+                <th>Emplacement</th>
+                <th>Clé</th>
+                <th>Valeur</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if parent_values is empty %}
+                <tr>
+                    <td class="ez-table__cell" colspan="3">Aucun paramètre hérité.</td>
+                </tr>
+            {% endif %}
+            {% for setting in parent_values %}
+                <tr>
+                    <td class="ez-table__cell">
+                        <a href="{{ path('ez_urlalias', {'locationId': setting.locationId}) }}">
+                            {{ ez_content_name(ez_get_location(setting.locationId).content) }}
+                        </a>
+                        <small class="d-block">ID : {{ setting.locationId }}</small>
+                    </td>
+                    <td class="ez-table__cell">
+                        <input type="text" class="form-control" value="{{ setting.key }}" aria-label="Clé" disabled readonly>
+                    </td>
+                    <td class="ez-table__cell">
+                        <input type="text" class="form-control" value="{{ setting.value }}" aria-label="Valeur" disabled readonly>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <h4 class="ml-2">Actualisation...</h4>
+    <meta http-equiv="refresh" content="0; url={{ app.request.uri }}#ez-tab-location-view-ibexa-settings#tab">
+{% endif %}
+
+<script src="{{ asset('bundles/ibexacustomsettings/ibexa_custom_settings.js') }}"></script>
