@@ -7,7 +7,7 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 Encore
     .setOutputPath('./src/Resources/public/')
     .setPublicPath('/')
-    .setManifestKeyPrefix('bundles/ibexa_custom_settings')
+    .setManifestKeyPrefix('bundles/ibexacustomsettings')
     .addEntry('ibexa_custom_settings', './assets/app.js')
     .disableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()

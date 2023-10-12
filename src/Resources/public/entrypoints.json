@@ -1,0 +1,9 @@
+{
+  "entrypoints": {
+    "ibexa_custom_settings": {
+      "js": [
+        "/ibexa_custom_settings.js"
+      ]
+    }
+  }
+}
