@@ -11,7 +11,7 @@ services:
 
     Onisep\IbexaCustomSettingsBundle\Tab\IbexaCustomSettingsLocationTab:
         tags:
-            - { name: 'ezplatform.tab', group: 'location-view' }
+            - { name: 'ibexa.admin_ui.tab', group: 'location-view' }
 
     Onisep\IbexaCustomSettingsBundle\Repository\LocationSettingRepository:
         arguments:

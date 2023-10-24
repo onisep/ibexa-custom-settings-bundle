@@ -1,14 +1,14 @@
-{% extends ['@ezdesign/layout.html.twig', '@ezdesign/ui/layout.html.twig'] %}
+{% extends ['@ibexadesign/layout.html.twig', '@ibexadesign/ui/layout.html.twig'] %}
 
 {% block breadcrumbs %}
-    {% include ['@ezdesign/parts/breadcrumbs.html.twig', '@ezdesign/ui/breadcrumbs.html.twig'] with {items: [
+    {% include ['@ibexadesign/parts/breadcrumbs.html.twig', '@ibexadesign/ui/breadcrumbs.html.twig'] with {items: [
         { value: 'breadcrumb.admin' | trans(domain='messages') | desc('Admin') },
         { value: 'ibexa_custom_settings.menu.label' | trans }
     ]} %}
 {% endblock %}
 
 {% block page_title %}
-    {% include ['@ezdesign/parts/page_title.html.twig', '@ezdesign/ui/page_title.html.twig'] with {
+    {% include ['@ibexadesign/parts/page_title.html.twig', '@ibexadesign/ui/page_title.html.twig'] with {
         title: 'ibexa_custom_settings.menu.label' | trans,
         iconName: 'contentlist'
     } %}

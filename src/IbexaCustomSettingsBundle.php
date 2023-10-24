@@ -20,7 +20,7 @@ class IbexaCustomSettingsBundle extends Bundle
     {
         parent::build($container);
 
-        $extension = $container->getExtension('ezpublish');
+        $extension = $container->getExtension('ibexa');
         $extension->addPolicyProvider(new IbexaCustomSettingsProvider());
     }
 }
