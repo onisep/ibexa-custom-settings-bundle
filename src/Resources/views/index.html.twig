@@ -37,8 +37,8 @@
                 <div class="mb-4">
                     <div class="mb-2 ml-3">
                         <strong>
-                            <a href="{{ path('ez_urlalias', {'locationId': location_id}) }}#ez-tab-location-view-ibexa-settings#tab" class="text-primary">
-                                {{ ez_content_name(ez_get_location(location_id).content) }}
+                            <a href="{{ path('ibexa.url.alias', {'locationId': location_id}) }}#ez-tab-location-view-ibexa-settings#tab" class="text-primary">
+                                {{ ibexa_content_name(ibexa_get_location(location_id).content) }}
                             </a>
                         </strong>
                         <small class="d-block">ID : {{ location_id }}</small>

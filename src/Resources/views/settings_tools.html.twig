@@ -1,7 +1,7 @@
 {% block tools %}
     {% set label %}
-        <svg class="ez-icon ez-icon--medium ez-icon--light">
-            <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#browse"></use>
+        <svg class="ibexa-icon ibexa-icon--medium ibexa-icon--light">
+            <use xlink:href="{{ ibexa_icon_path('browse') }}"></use>
         </svg>
     {% endset %}
 
@@ -9,7 +9,7 @@
         'label': label,
         'label_html': true,
         'attr': {
-            'data-udw-config': ez_udw_config('multiple', {}),
+            'data-udw-config': ibexa_udw_config('multiple', {}),
             'class': (field.location.select_content.vars.attr.class ?? '' ~ ' btn btn-sm btn-info location-selector-browse') | trim,
             'title': 'Sélectionner un emplacement'
         }
@@ -17,8 +17,8 @@
     {{ form_widget(field.location.location, {attr: {value: field.value.vars.value}}) }}
 
     <button type="button" title="Supprimer le paramètre" class="btn btn-sm btn-danger ibexa-settings-form-remove">
-        <svg class="ez-icon ez-icon--medium ez-icon--light">
-            <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#trash"></use>
+        <svg class="ibexa-icon ibexa-icon--medium ibexa-icon--light">
+            <use xlink:href="{{ ibexa_icon_path('trash') }}"></use>
         </svg>
     </button>
 {% endblock %}

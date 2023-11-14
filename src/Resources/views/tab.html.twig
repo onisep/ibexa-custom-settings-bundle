@@ -83,8 +83,8 @@
             {% for setting in parent_values %}
                 <tr>
                     <td class="ez-table__cell">
-                        <a href="{{ path('ez_urlalias', {'locationId': setting.locationId}) }}">
-                            {{ ez_content_name(ez_get_location(setting.locationId).content) }}
+                        <a href="{{ path('ibexa.url.alias', {'locationId': setting.locationId}) }}">
+                            {{ ibexa_content_name(ibexa_get_location(setting.locationId).content) }}
                         </a>
                         <small class="d-block">ID : {{ setting.locationId }}</small>
                     </td>
