@@ -1,45 +1,45 @@
-<div class="ez-table-header">
-    <strong class="ez-table-header__headline">Paramètres personnalisés</strong>
+<div class="ibexa-table-header">
+    <strong class="ibexa-table-header__headline">Paramètres personnalisés</strong>
 </div>
 
 {% if form is defined %}
     {% import _self as macros %}
     {% macro setting_form_row(field) %}
-        <tr>
-            <td class="ez-table__cell">
+        <tr class="ibexa-table__row">
+            <td class="ibexa-table__cell">
                 {{ form_widget(field.key) }}
                 {% if not field.key.vars.valid %}
                     <div class="invalid-feedback">{{ form_errors(field.key) }}</div>
                 {% endif %}
             </td>
-            <td class="ez-table__cell">
+            <td class="ibexa-table__cell">
                 {{ form_widget(field.value) }}
                 {% if not field.value.vars.valid %}
                     <div class="invalid-feedback">{{ form_errors(field.value) }}</div>
                 {% endif %}
             </td>
-            <td class="ez-table__cell">
+            <td class="ibexa-table__cell">
                 {{ include('@IbexaCustomSettings/settings_tools.html.twig') }}
             </td>
         </tr>
     {% endmacro %}
 
-    <div class="ez-scrollable-table-wrapper mb-4">
+    <div class="mb-4">
         {% form_theme form '@ibexadesign/ui/form_fields.html.twig' %}
         {{ form_start(form) }}
 
-        <table class="ez-table table table-hover">
+        <table class="ibexa-table table table-hover">
             <thead>
-            <tr>
-                <th>Clé</th>
-                <th>Valeur</th>
-                <th></th>
+            <tr class="ibexa-table__head-row">
+                <th class="ibexa-table__header-cell">Clé</th>
+                <th class="ibexa-table__header-cell">Valeur</th>
+                <th class="ibexa-table__header-cell"></th>
             </tr>
             </thead>
             <tbody data-index="{{ form.settings | length > 0 ? form.settings | last.vars.name + 1 : 0 }}" data-prototype="{{ macros.setting_form_row(form.settings.vars.prototype) | e('html_attr') }}">
             {% if form.settings is empty %}
-                <tr>
-                    <td class="ez-table__cell" colspan="3">Aucun paramètre personnalisé.</td>
+                <tr class="ibexa-table__row">
+                    <td class="ibexa-table__cell" colspan="3">Aucun paramètre personnalisé.</td>
                 </tr>
             {% endif %}
             {% for field in form.settings %}
@@ -62,46 +62,44 @@
 
     <hr>
 
-    <div class="ez-scrollable-table-wrapper">
-        <div class="ez-table-header">
-            <strong class="ez-table-header__headline">Paramètres personnalisés hérités</strong>
-        </div>
-        <table class="ez-table table table-hover">
-            <thead>
-            <tr>
-                <th>Emplacement</th>
-                <th>Clé</th>
-                <th>Valeur</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% if parent_values is empty %}
-                <tr>
-                    <td class="ez-table__cell" colspan="3">Aucun paramètre hérité.</td>
-                </tr>
-            {% endif %}
-            {% for setting in parent_values %}
-                <tr>
-                    <td class="ez-table__cell">
-                        <a href="{{ path('ibexa.url.alias', {'locationId': setting.locationId}) }}">
-                            {{ ibexa_content_name(ez_get_location(setting.locationId).content) }}
-                        </a>
-                        <small class="d-block">ID : {{ setting.locationId }}</small>
-                    </td>
-                    <td class="ez-table__cell">
-                        <input type="text" class="form-control" value="{{ setting.key }}" aria-label="Clé" disabled readonly>
-                    </td>
-                    <td class="ez-table__cell">
-                        <input type="text" class="form-control" value="{{ setting.value }}" aria-label="Valeur" disabled readonly>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <div class="ibexa-table-header">
+        <strong class="ibexa-table-header__headline">Paramètres personnalisés hérités</strong>
     </div>
+    <table class="ibexa-table table table-hover">
+        <thead>
+        <tr class="ibexa-table__head-row">
+            <th class="ibexa-table__header-cell">Emplacement</th>
+            <th class="ibexa-table__header-cell">Clé</th>
+            <th class="ibexa-table__header-cell">Valeur</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if parent_values is empty %}
+            <tr>
+                <td class="ibexa-table__cell" colspan="3">Aucun paramètre hérité.</td>
+            </tr>
+        {% endif %}
+        {% for setting in parent_values %}
+            <tr class="ibexa-table__row">
+                <td class="ibexa-table__cell">
+                    <a href="{{ path('ibexa.url.alias', {'locationId': setting.locationId}) }}">
+                        {{ ibexa_content_name(ez_get_location(setting.locationId).content) }}
+                    </a>
+                    <small class="d-block">ID : {{ setting.locationId }}</small>
+                </td>
+                <td class="ibexa-table__cell">
+                    <input type="text" class="form-control" value="{{ setting.key }}" aria-label="Clé" disabled readonly>
+                </td>
+                <td class="ibexa-table__cell">
+                    <input type="text" class="form-control" value="{{ setting.value }}" aria-label="Valeur" disabled readonly>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% else %}
     <h4 class="ml-2">Actualisation...</h4>
-    <meta http-equiv="refresh" content="0; url={{ app.request.uri }}#ez-tab-location-view-ibexa-settings#tab">
+    <meta http-equiv="refresh" content="0; url={{ app.request.uri }}#ibexa-tab-location-view-ibexa-settings#tab">
 {% endif %}
 
 <script src="{{ asset('bundles/ibexacustomsettings/ibexa_custom_settings.js') }}"></script>
