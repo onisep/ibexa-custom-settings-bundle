@@ -32,6 +32,7 @@ class MenuSubscriber implements EventSubscriberInterface
             $menu[MainMenuBuilder::ITEM_ADMIN]->addChild('ibexa_custom_settings', [
                 'label' => 'ibexa_custom_settings.menu.label',
                 'route' => 'ibexa_custom_settings_index',
+                'extras' => ['translation_domain' => 'messages']
             ]);
         }
     }

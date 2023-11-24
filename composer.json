@@ -15,6 +15,14 @@
     ],
     "require": {
         "symfony/framework-bundle": "^5.4",
-        "symfony/webpack-encore-bundle": "v1.17.1"
+        "symfony/webpack-encore-bundle": "v1.17.1",
+        "ibexa/core": "^4.5.3",
+        "http-interop/http-factory-guzzle": "^1.2",
+        "ibexa/admin-ui": "^4.5.3"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }

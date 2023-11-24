@@ -3,7 +3,8 @@
 namespace Onisep\IbexaCustomSettingsBundle\Tab;
 
 use Doctrine\ORM\EntityManagerInterface;
-use eZ\Publish\API\Repository\Values\Content\Location;
+use Ibexa\Contracts\Core\Repository\LocationService;
+use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use eZ\Publish\Core\MVC\Symfony\Security\Authorization\Attribute;
 use EzSystems\EzPlatformAdminUi\Tab\AbstractEventDispatchingTab;
 use EzSystems\EzPlatformAdminUi\Tab\OrderedTabInterface;
@@ -26,6 +27,7 @@ class IbexaCustomSettingsLocationTab extends AbstractEventDispatchingTab impleme
     private EntityManagerInterface $entityManager;
     private RequestStack $requestStack;
     private LocationSettingRepository $locationSettingRepository;
+    private LocationService $locationService;
 
     public function __construct(
         Environment $twig,
@@ -36,7 +38,8 @@ class IbexaCustomSettingsLocationTab extends AbstractEventDispatchingTab impleme
         AuthorizationCheckerInterface $authorizationChecker,
         EntityManagerInterface $entityManager,
         RequestStack $requestStack,
-        LocationSettingRepository $locationSettingRepository
+        LocationSettingRepository $locationSettingRepository,
+        LocationService $locationService
     ) {
         parent::__construct($twig, $translator, $eventDispatcher);
 
@@ -46,6 +49,7 @@ class IbexaCustomSettingsLocationTab extends AbstractEventDispatchingTab impleme
         $this->entityManager = $entityManager;
         $this->requestStack = $requestStack;
         $this->locationSettingRepository = $locationSettingRepository;
+        $this->locationService = $locationService;
     }
 
     public function getTemplate(): string
@@ -106,9 +110,18 @@ class IbexaCustomSettingsLocationTab extends AbstractEventDispatchingTab impleme
         unset($parentLocationIds[$location->id]);
         $parentValues = $this->locationSettingRepository->findByLocationIds(array_slice($parentLocationIds, 0, -1));
 
+        $locations = [];
+        foreach ($parentValues as $setting) {
+            $locationId = $setting->getLocationId();
+            if (!array_key_exists($locationId, $locations)) {
+                $locations[$locationId] = $this->locationService->loadLocation($locationId);
+            }
+        }
+
         return [
             'form' => $form->createView(),
             'parent_values' => $parentValues,
+            'locations' => $locations
         ];
     }
 

@@ -4,14 +4,18 @@ services:
 
     Onisep\IbexaCustomSettingsBundle\Controller\IbexaCustomSettingController:
         autoconfigure: true
+        arguments:
+            $locationService: '@Ibexa\Contracts\Core\Repository\LocationService'
 
     Onisep\IbexaCustomSettingsBundle\EventSubscriber\MenuSubscriber:
         tags:
             - { name: 'kernel.event_subscriber' }
 
     Onisep\IbexaCustomSettingsBundle\Tab\IbexaCustomSettingsLocationTab:
+        arguments:
+            $locationService: '@Ibexa\Contracts\Core\Repository\LocationService'
         tags:
-            - { name: 'ezplatform.tab', group: 'location-view' }
+            - { name: 'ibexa.admin_ui.tab', group: 'location-view' }
 
     Onisep\IbexaCustomSettingsBundle\Repository\LocationSettingRepository:
         arguments:
