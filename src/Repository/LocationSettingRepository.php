@@ -65,23 +65,26 @@ class LocationSettingRepository extends ServiceEntityRepository
      * @param array $locationIds
      * @param bool $firstOnly
      *
-     * @return LocationSetting|LocationSetting[]|null
+     * @return array|false
      */
     public function findByKeyAndLocationId(string $key, array $locationIds, bool $firstOnly = false)
     {
-        $query = $this->createQueryBuilder('l')
-            ->andWhere('l.key = :key')
+        $query = $this->getEntityManager()->getConnection()->createQueryBuilder()
+            ->select('l.*, e.depth')
+            ->from('ibexa_custom_settings', 'l')
+            ->andWhere('l.setting_key = :key')
             ->setParameter('key', $key)
-            ->andWhere('l.locationId in (:ids)')
-            ->setParameter('ids', $locationIds)
+            ->andWhere($this->getEntityManager()->getExpressionBuilder()->in('l.location_id', $locationIds))
+            ->join('l', 'ezcontentobject_tree', 'e', 'l.location_id = e.node_id')
+            ->groupBy('setting_key')
             ->orderBy('l.id', 'ASC')
-            ->getQuery();
+            ->addOrderBy('e.depth', 'DESC');
 
         if ($firstOnly) {
-            return $query->getOneOrNullResult();
+            return $query->execute()->fetchAssociative();
         }
 
-        return $query->getResult();
+        return $query->execute()->fetchAllAssociative();
     }
 
     /**
