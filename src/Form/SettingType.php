@@ -22,7 +22,7 @@ class SettingType extends AbstractType
             unset($keyFieldOptions['required']);
         }
 
-        $valueFieldOptions = ['label' => 'Valeur', 'attr' => ['rows' => 1], 'required' => true];
+        $valueFieldOptions = ['label' => 'Valeur', 'attr' => ['rows' => 1,'style'=>'height:48px' ], 'required' => true ];
         if (!$options['can_edit_values']) {
             $valueFieldOptions['disabled'] = true;
             $valueFieldOptions['attr']['readonly'] = true;
