@@ -78,8 +78,17 @@ class IbexaCustomSettingsLocationTab extends AbstractEventDispatchingTab impleme
                 if (is_iterable($item)) {
                     foreach ($item as $subItem) {
                         if ($subItem instanceof LocationSetting && $subItem->getLocationId() === null) {
+                            $enr = true;
                             $subItem->setLocationId($location->id);
-                            $this->entityManager->persist($subItem);
+                            $locationSettingList = $this->locationSettingRepository->findAllFiltered($subItem->getKey());
+                            if ($locationSettingList !==[]) {
+                                foreach ($locationSettingList as $locationSettingItem) {
+                                    if ($locationSettingItem->getValue() === $subItem->getValue()) {
+                                        $enr = false;
+                                    }
+                                }
+                            }
+                            $enr ? $this->entityManager->persist($subItem) : null ;
                         }
                     }
                 }
