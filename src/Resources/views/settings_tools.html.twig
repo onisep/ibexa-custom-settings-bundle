@@ -14,7 +14,13 @@
             'title': 'Sélectionner un emplacement'
         }
     })) }}
-    {{ form_widget(field.location.location, {attr: {value: field.value.vars.value}}) }}
+
+    {% set location_value = '' %}
+    {% if field.value.vars.value matches '/^\d+[\d+,]+$/m' %}
+        {% set location_value = field.value.vars.value %}
+    {% endif %}
+
+    {{ form_widget(field.location.location, {attr: {value: location_value}}) }}
 
     <button type="button" title="Supprimer le paramètre" class="btn btn-sm btn-danger ibexa-settings-form-remove">
         <svg class="ibexa-icon ibexa-icon--medium ibexa-icon--light">
