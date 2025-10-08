@@ -39,7 +39,7 @@ class IbexaCustomSettingsExtension extends AbstractExtension
             return null;
         }
 
-        return $setting->getValue();
+        return $setting["setting_value"];
     }
 
     public function getSettingsByLocation($locationOrLocationId): array

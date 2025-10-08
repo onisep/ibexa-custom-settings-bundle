@@ -43,7 +43,6 @@ class LocationSetting
      * @ORM\Column(name="setting_value", type="text")
      *
      * @Assert\NotBlank
-     * @Assert\Length(min=3)
      */
     private ?string $value = null;
 
