@@ -1,35 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Onisep\IbexaCustomSettingsBundle\Twig;
 
-use eZ\Publish\API\Repository\LocationService;
-use eZ\Publish\API\Repository\Values\Content\Content as ContentAPI;
-use eZ\Publish\API\Repository\Values\Content\Location;
-use eZ\Publish\Core\Repository\Values\Content\Content;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use Onisep\IbexaCustomSettingsBundle\Entity\LocationSetting;
 use Onisep\IbexaCustomSettingsBundle\Repository\LocationSettingRepository;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
+use Twig\Attribute\AsTwigFunction;
 
-class IbexaCustomSettingsExtension extends AbstractExtension
+class IbexaCustomSettingsExtension
 {
-    private LocationService $locationService;
-    private LocationSettingRepository $locationSettingRepository;
-
-    public function __construct(LocationService $locationService, LocationSettingRepository $locationSettingRepository)
+    public function __construct(private readonly LocationSettingRepository $locationSettingRepository)
     {
-        $this->locationService = $locationService;
-        $this->locationSettingRepository = $locationSettingRepository;
     }
 
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('get_location_setting', [$this, 'getSettingByLocation']),
-            new TwigFunction('get_location_settings', [$this, 'getSettingsByLocation']),
-        ];
-    }
-
+    #[AsTwigFunction('get_location_setting')]
     public function getSettingByLocation(string $key, $locationOrLocationId)
     {
         $locationIds = $this->getLocationIds($locationOrLocationId);
@@ -42,13 +29,14 @@ class IbexaCustomSettingsExtension extends AbstractExtension
         return $setting["setting_value"];
     }
 
+    #[AsTwigFunction('get_location_settings')]
     public function getSettingsByLocation($locationOrLocationId): array
     {
         $locationIds = $this->getLocationIds($locationOrLocationId);
         $settings = $this->locationSettingRepository->findByLocationIds($locationIds);
 
-        return array_reduce($settings, static function (array $result, LocationSetting $setting) {
-            $result[$setting->getKey()] = $setting->getValue();
+        return array_reduce($settings, static function (array $result, LocationSetting $locationSetting): array {
+            $result[$locationSetting->getKey()] = $locationSetting->getValue();
 
             return $result;
         }, []);
@@ -56,7 +44,7 @@ class IbexaCustomSettingsExtension extends AbstractExtension
 
     private function getLocationIds($locationOrLocationId): array
     {
-        if ($locationOrLocationId instanceof Content || $locationOrLocationId instanceof ContentAPI) {
+        if ($locationOrLocationId instanceof Content) {
             throw new \InvalidArgumentException('The locationOrLocationId argument must be a location or a location ID.');
         }
 

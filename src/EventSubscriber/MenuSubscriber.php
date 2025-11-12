@@ -1,19 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Onisep\IbexaCustomSettingsBundle\EventSubscriber;
 
-use eZ\Publish\API\Repository\PermissionResolver;
-use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
-use EzSystems\EzPlatformAdminUi\Menu\MainMenuBuilder;
+use Ibexa\Contracts\Core\Repository\PermissionResolver;
+use Ibexa\AdminUi\Menu\Event\ConfigureMenuEvent;
+use Ibexa\AdminUi\Menu\MainMenuBuilder;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MenuSubscriber implements EventSubscriberInterface
 {
-    private PermissionResolver $permissionResolver;
-
-    public function __construct(PermissionResolver $permissionResolver)
+    public function __construct(private readonly PermissionResolver $permissionResolver)
     {
-        $this->permissionResolver = $permissionResolver;
     }
 
     public static function getSubscribedEvents(): array
@@ -21,9 +20,9 @@ class MenuSubscriber implements EventSubscriberInterface
         return [ConfigureMenuEvent::MAIN_MENU => ['configureMenu']];
     }
 
-    public function configureMenu(ConfigureMenuEvent $event)
+    public function configureMenu(ConfigureMenuEvent $configureMenuEvent): void
     {
-        $menu = $event->getMenu();
+        $menu = $configureMenuEvent->getMenu();
         if (!isset($menu[MainMenuBuilder::ITEM_ADMIN])) {
             return;
         }

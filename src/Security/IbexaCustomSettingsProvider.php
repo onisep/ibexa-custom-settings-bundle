@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Onisep\IbexaCustomSettingsBundle\Security;
 
-use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Security\PolicyProvider\YamlPolicyProvider;
+use Ibexa\Bundle\Core\DependencyInjection\Security\PolicyProvider\YamlPolicyProvider;
 
 class IbexaCustomSettingsProvider extends YamlPolicyProvider
 {

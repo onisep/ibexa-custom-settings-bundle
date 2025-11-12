@@ -1,55 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Onisep\IbexaCustomSettingsBundle\Tab;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Ibexa\Contracts\AdminUi\Tab\AbstractEventDispatchingTab;
+use Ibexa\Contracts\AdminUi\Tab\OrderedTabInterface;
 use Ibexa\Contracts\Core\Repository\LocationService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
-use eZ\Publish\Core\MVC\Symfony\Security\Authorization\Attribute;
-use EzSystems\EzPlatformAdminUi\Tab\AbstractEventDispatchingTab;
-use EzSystems\EzPlatformAdminUi\Tab\OrderedTabInterface;
+use Ibexa\Core\MVC\Symfony\Security\Authorization\Attribute;
 use Onisep\IbexaCustomSettingsBundle\Entity\LocationSetting;
 use Onisep\IbexaCustomSettingsBundle\Form\LocationSettingsType;
 use Onisep\IbexaCustomSettingsBundle\Repository\LocationSettingRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 class IbexaCustomSettingsLocationTab extends AbstractEventDispatchingTab implements OrderedTabInterface
 {
-    private HttpKernelInterface $httpKernel;
-    private FormFactoryInterface $formFactory;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private EntityManagerInterface $entityManager;
-    private RequestStack $requestStack;
-    private LocationSettingRepository $locationSettingRepository;
-    private LocationService $locationService;
-
     public function __construct(
-        Environment $twig,
+        Environment $twigEnvironment,
         TranslatorInterface $translator,
         EventDispatcherInterface $eventDispatcher,
-        HttpKernelInterface $httpKernel,
-        FormFactoryInterface $formFactory,
-        AuthorizationCheckerInterface $authorizationChecker,
-        EntityManagerInterface $entityManager,
-        RequestStack $requestStack,
-        LocationSettingRepository $locationSettingRepository,
-        LocationService $locationService
+        private readonly FormFactoryInterface $formFactory,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly RequestStack $requestStack,
+        private readonly LocationSettingRepository $locationSettingRepository,
+        private readonly LocationService $locationService
     ) {
-        parent::__construct($twig, $translator, $eventDispatcher);
-
-        $this->httpKernel = $httpKernel;
-        $this->formFactory = $formFactory;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->entityManager = $entityManager;
-        $this->requestStack = $requestStack;
-        $this->locationSettingRepository = $locationSettingRepository;
-        $this->locationService = $locationService;
+        parent::__construct($twigEnvironment, $translator, $eventDispatcher);
     }
 
     public function getTemplate(): string
@@ -81,14 +65,15 @@ class IbexaCustomSettingsLocationTab extends AbstractEventDispatchingTab impleme
                             $enr = true;
                             $subItem->setLocationId($location->id);
                             $locationSettingList = $this->locationSettingRepository->findAllFiltered($subItem->getKey());
-                            if ($locationSettingList !==[]) {
-                                foreach ($locationSettingList as $locationSettingItem) {
-                                    if ($locationSettingItem->getValue() === $subItem->getValue()) {
-                                        $enr = false;
-                                    }
+                            foreach ($locationSettingList as $locationSettingItem) {
+                                if ($locationSettingItem->getValue() === $subItem->getValue()) {
+                                    $enr = false;
                                 }
                             }
-                            $enr ? $this->entityManager->persist($subItem) : null ;
+
+                            if ($enr) {
+                                $this->entityManager->persist($subItem);
+                            }
                         }
                     }
                 }
@@ -120,8 +105,8 @@ class IbexaCustomSettingsLocationTab extends AbstractEventDispatchingTab impleme
         $parentValues = $this->locationSettingRepository->findByLocationIds(array_slice($parentLocationIds, 0, -1));
 
         $locations = [];
-        foreach ($parentValues as $setting) {
-            $locationId = $setting->getLocationId();
+        foreach ($parentValues as $parentValue) {
+            $locationId = $parentValue->getLocationId();
             if (!array_key_exists($locationId, $locations)) {
                 $locations[$locationId] = $this->locationService->loadLocation($locationId);
             }

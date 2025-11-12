@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Onisep\IbexaCustomSettingsBundle\Controller;
 
 use Ibexa\Bundle\Core\Controller;
@@ -11,13 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IbexaCustomSettingController extends Controller
 {
-    private LocationSettingRepository $locationSettingRepository;
-    private LocationService $locationService;
-
-    public function __construct(LocationSettingRepository $locationSettingRepository, LocationService $locationService)
+    public function __construct(private readonly LocationSettingRepository $locationSettingRepository, private readonly LocationService $locationService)
     {
-        $this->locationSettingRepository = $locationSettingRepository;
-        $this->locationService = $locationService;
     }
 
     public function index(Request $request): Response
@@ -27,9 +24,9 @@ class IbexaCustomSettingController extends Controller
         // All settings filterer by key
         $settings = $this->locationSettingRepository->findAllFiltered($keyFilter);
         $locations = [];
-        $settingsGroupedById = array_reduce($settings, function (array $accumulator, LocationSetting $setting) use (&$locations) {
-            $locationId = $setting->getLocationId();
-            $accumulator[$locationId][] = $setting;
+        $settingsGroupedById = array_reduce($settings, function (array $accumulator, LocationSetting $locationSetting) use (&$locations): array {
+            $locationId = $locationSetting->getLocationId();
+            $accumulator[$locationId][] = $locationSetting;
 
             if (!array_key_exists($locationId, $locations)) {
                 $locations[$locationId] = $this->locationService->loadLocation($locationId);
@@ -39,9 +36,7 @@ class IbexaCustomSettingController extends Controller
         }, []);
 
         // Settings keys only (for filter)
-        $settingsKeys = array_map(static function (LocationSetting $setting) {
-            return $setting->getKey();
-        }, $this->locationSettingRepository->findAllFiltered());
+        $settingsKeys = array_map(static fn(LocationSetting $locationSetting): string => $locationSetting->getKey(), $this->locationSettingRepository->findAllFiltered());
         sort($settingsKeys);
 
         return $this->render('@IbexaCustomSettings/index.html.twig', [

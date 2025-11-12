@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Onisep\IbexaCustomSettingsBundle\Form;
 
-use EzSystems\EzPlatformAdminUi\Form\Type\UniversalDiscoveryWidget\UniversalDiscoveryWidgetType;
+use Ibexa\AdminUi\Form\Type\UniversalDiscoveryWidget\UniversalDiscoveryWidgetType;
 use Onisep\IbexaCustomSettingsBundle\Entity\LocationSetting;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -13,9 +15,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SettingType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $keyFieldOptions = ['label' => 'Clé', 'required' => true, 'setter' => [$this, 'generateSlug']];
+        $keyFieldOptions = ['label' => 'Clé', 'required' => true, 'setter' => $this->generateSlug(...)];
         if (!$options['can_edit_keys']) {
             $keyFieldOptions['disabled'] = true;
             $keyFieldOptions['attr'] = ['readonly' => true];
@@ -50,8 +52,8 @@ class SettingType extends AbstractType
             ]);
     }
 
-    public function generateSlug(LocationSetting $setting, ?string $key, FormInterface $form)
+    public function generateSlug(LocationSetting $locationSetting, ?string $key, FormInterface $form): void
     {
-        $setting->setKey($key);
+        $locationSetting->setKey($key);
     }
 }

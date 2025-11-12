@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Onisep\IbexaCustomSettingsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -7,43 +9,25 @@ use Onisep\IbexaCustomSettingsBundle\Repository\LocationSettingRepository;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=LocationSettingRepository::class)
- * @ORM\Table(name="ibexa_custom_settings")
- */
+#[ORM\Entity(repositoryClass: LocationSettingRepository::class)]
+#[ORM\Table(name: 'ibexa_custom_settings')]
 class LocationSetting
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="location_id", type="integer", nullable=false)
-     */
+    #[ORM\Column(name: 'location_id', type: 'integer')]
     private ?int $locationId = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="setting_key", type="string", length=300, nullable=false)
-     *
-     * @Assert\NotBlank
-     * @Assert\Length(min=3)
-     */
+    #[ORM\Column(name: 'setting_key', type: 'string', length: 300)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3)]
     private string $key;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="setting_value", type="text")
-     *
-     * @Assert\NotBlank
-     */
+    #[ORM\Column(name: 'setting_value', type: 'text')]
+    #[Assert\NotBlank]
     private ?string $value = null;
 
     public function getId(): ?int
@@ -70,9 +54,9 @@ class LocationSetting
 
     public function setKey(string $key): self
     {
-        $slugger = new AsciiSlugger('fr');
+        $asciiSlugger = new AsciiSlugger('fr');
 
-        $this->key = $slugger->slug($key)->toString();
+        $this->key = $asciiSlugger->slug($key)->toString();
 
         return $this;
     }

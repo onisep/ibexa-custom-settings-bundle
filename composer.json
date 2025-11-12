@@ -14,11 +14,12 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "^5.4",
-        "symfony/webpack-encore-bundle": "v1.17.1",
-        "ibexa/core": "^4.5.3",
-        "http-interop/http-factory-guzzle": "^1.2",
-        "ibexa/admin-ui": "^4.5.3"
+        "php": ">=8.3",
+        "symfony/framework-bundle": "^7.3",
+        "ibexa/core": "^5.0",
+        "ibexa/admin-ui": "^5.0",
+        "guzzlehttp/promises": "^2.3",
+        "nyholm/psr7": "^1.8"
     },
     "config": {
         "allow-plugins": {

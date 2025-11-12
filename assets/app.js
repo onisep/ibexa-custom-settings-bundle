@@ -1,10 +1,10 @@
-const onConfirm = (form, button, content) => {
+const onConfirm = (form, button, udwRoot, content) => {
     const row = button.parentNode.parentNode;
 
     const field = row.querySelector('input[name$="[value]"], textarea[name$="[value]"]');
     field.value = content.map(item => item.id).join(',');
 
-    closeUDW();
+    udwRoot.unmount();
 };
 
 const openUDW = event => {
@@ -19,18 +19,17 @@ const openUDW = event => {
         .map(id => parseInt(id))
         .filter(Number.isInteger);
 
-    ReactDOM.render(
-        React.createElement(eZ.modules.UniversalDiscovery, {
-            onConfirm: onConfirm.bind(this, form, button),
-            onCancel: () => closeUDW(),
+    const container = document.querySelector('#react-udw');
+    const udwRoot = window.ReactDOMClient.createRoot(container);
+    udwRoot.render(
+        React.createElement(window.ibexa.modules.UniversalDiscovery, {
+            onConfirm: onConfirm.bind(this, form, button, udwRoot),
+            onCancel: () => udwRoot.unmount(),
             selectedLocations,
             ...config,
         }),
-        document.getElementById('react-udw')
     );
 };
-
-const closeUDW = () => ReactDOM.unmountComponentAtNode(document.getElementById('react-udw'));
 
 const removeRow = event => {
     const button = event.target.closest('button');

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Onisep\IbexaCustomSettingsBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -9,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class LocationSettingsType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('settings', CollectionType::class, [

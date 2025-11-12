@@ -15,8 +15,8 @@ Symfony bundle for configuring custom parameters linked to an Ibexa location.
 
 ## Requirements
 
-* php: >=7.4
-* ibexa: ^3.3
+* php: >=8.3
+* ibexa: ^5.0
 
 ## Installation
 

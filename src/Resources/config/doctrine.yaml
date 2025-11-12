@@ -1,0 +1,7 @@
+orm:
+    mappings:
+        IbexaCustomSettingsBundle:
+            is_bundle: true
+            type: attribute
+            dir: Entity
+            prefix: Onisep\IbexaCustomSettingsBundle\Entity
