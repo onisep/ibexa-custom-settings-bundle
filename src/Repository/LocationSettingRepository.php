@@ -5,18 +5,11 @@ declare(strict_types=1);
 namespace Onisep\IbexaCustomSettingsBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use Onisep\IbexaCustomSettingsBundle\Entity\LocationSetting;
 
 /**
  * @extends ServiceEntityRepository<LocationSetting>
- *
- * @method LocationSetting|null find($id, $lockMode = null, $lockVersion = null)
- * @method LocationSetting|null findOneBy(array $criteria, array $orderBy = null)
- * @method LocationSetting[]    findAll()
- * @method LocationSetting[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class LocationSettingRepository extends ServiceEntityRepository
 {
@@ -26,42 +19,15 @@ class LocationSettingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return LocationSetting[]
      */
-    public function add(LocationSetting $locationSetting, bool $flush = true): void
-    {
-        $this->_em->persist($locationSetting);
-
-        if ($flush) {
-            $this->_em->flush();
-        }
-    }
-
-    /**
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function remove(LocationSetting $locationSetting, bool $flush = true): void
-    {
-        $this->_em->remove($locationSetting);
-
-        if ($flush) {
-            $this->_em->flush();
-        }
-    }
-
-    /**
-     * @return \Onisep\IbexaCustomSettingsBundle\Entity\LocationSetting[]
-     */
-    public function findAllFiltered(string $key = null): array
+    public function findAllFiltered(?string $key = null): array
     {
         $queryBuilder = $this->createQueryBuilder('l')
             ->orderBy('l.id', 'ASC');
 
         if ($key !== null && $key !== '') {
-            $queryBuilder
-                ->where('l.key = :key')
+            $queryBuilder->where('l.key = :key')
                 ->setParameter('key', $key);
         }
 
@@ -69,10 +35,10 @@ class LocationSettingRepository extends ServiceEntityRepository
     }
 
     /**
-     *
+     * @param int[] $locationIds
      * @return array|false
      */
-    public function findByKeyAndLocationId(string $key, array $locationIds, bool $firstOnly = false)
+    public function findByKeyAndLocationId(string $key, array $locationIds, bool $firstOnly = false): array|false
     {
         $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder()
             ->select('l.*, e.depth')
@@ -93,7 +59,7 @@ class LocationSettingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return \Onisep\IbexaCustomSettingsBundle\Entity\LocationSetting[]
+     * @return LocationSetting[]
      */
     public function findByLocationId(int $locationId): array
     {
@@ -107,11 +73,14 @@ class LocationSettingRepository extends ServiceEntityRepository
 
     /**
      * @param int[] $locationIds
-     *
-     * @return \Onisep\IbexaCustomSettingsBundle\Entity\LocationSetting[]
+     * @return LocationSetting[]
      */
     public function findByLocationIds(array $locationIds): array
     {
+        if (empty($locationIds)) {
+            return [];
+        }
+
         return $this->createQueryBuilder('l')
             ->andWhere('l.locationId in (:ids)')
             ->setParameter('ids', $locationIds)

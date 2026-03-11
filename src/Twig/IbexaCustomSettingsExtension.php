@@ -17,48 +17,41 @@ class IbexaCustomSettingsExtension
     }
 
     #[AsTwigFunction('get_location_setting')]
-    public function getSettingByLocation(string $key, $locationOrLocationId)
+    public function getSettingByLocation(string $key, Location|int|array $locationOrLocationId): ?string
     {
         $locationIds = $this->getLocationIds($locationOrLocationId);
         $setting = $this->locationSettingRepository->findByKeyAndLocationId($key, $locationIds, true);
 
-        if (!$setting) {
-            return null;
-        }
-
-        return $setting["setting_value"];
+        return $setting ? $setting['setting_value'] : null;
     }
 
     #[AsTwigFunction('get_location_settings')]
-    public function getSettingsByLocation($locationOrLocationId): array
+    public function getSettingsByLocation(Location|int|array $locationOrLocationId): array
     {
         $locationIds = $this->getLocationIds($locationOrLocationId);
         $settings = $this->locationSettingRepository->findByLocationIds($locationIds);
 
-        return array_reduce($settings, static function (array $result, LocationSetting $locationSetting): array {
-            $result[$locationSetting->getKey()] = $locationSetting->getValue();
-
-            return $result;
-        }, []);
-    }
-
-    private function getLocationIds($locationOrLocationId): array
-    {
-        if ($locationOrLocationId instanceof Content) {
-            throw new \InvalidArgumentException('The locationOrLocationId argument must be a location or a location ID.');
+        $result = [];
+        foreach ($settings as $setting) {
+            $result[$setting->getKey()] = $setting->getValue();
         }
 
-        // Location object
+        return $result;
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getLocationIds(Location|int|array $locationOrLocationId): array
+    {
         if ($locationOrLocationId instanceof Location) {
             return [$locationOrLocationId->id];
         }
 
-        // Location path or array of ids
         if (is_array($locationOrLocationId)) {
             return $locationOrLocationId;
         }
 
-        // Location id
         return [$locationOrLocationId];
     }
 }

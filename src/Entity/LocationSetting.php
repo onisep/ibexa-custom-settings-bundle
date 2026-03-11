@@ -13,6 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'ibexa_custom_settings')]
 class LocationSetting
 {
+    private static ?AsciiSlugger $slugger = null;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -54,9 +56,9 @@ class LocationSetting
 
     public function setKey(string $key): self
     {
-        $asciiSlugger = new AsciiSlugger('fr');
+        self::$slugger ??= new AsciiSlugger('fr');
 
-        $this->key = $asciiSlugger->slug($key)->toString();
+        $this->key = self::$slugger->slug($key)->toString();
 
         return $this;
     }
